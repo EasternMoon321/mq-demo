@@ -1,0 +1,18 @@
+spring:
+  profiles:
+    active: dev
+  redis:
+    host: ${common.ip}
+    username: admin
+    password: ${common.password}
+  activemq:
+    broker-url: tcp://${common.ip}:61616
+    user: admin
+    password: admin
+    queue: ${spring.application.name}-queue
+  datasource:
+    username: admin
+    password: ${common.password}
+    url: jdbc:mysql://${common.ip}:3306/test
+  application:
+    name: mq-demo
