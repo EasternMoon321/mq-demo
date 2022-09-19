@@ -10,9 +10,18 @@ spring:
     user: admin
     password: admin
     queue: ${spring.application.name}-queue
+    exception-queue: ${spring.application.name}-exception-queue
+    topic: ${spring.application.name}-topic
   datasource:
     username: admin
     password: ${common.password}
     url: jdbc:mysql://${common.ip}:3306/test
   application:
     name: mq-demo
+  #  这个mvc的配置是springboot2.6.1不支持swagger3的折衷配置，后面考虑升级Springboot版本或降级版本
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jms:
+    template:
+      delivery-mode: PERSISTENT
