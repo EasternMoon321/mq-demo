@@ -1,6 +1,9 @@
 package com.eastern.mqdemo.controller;
 
 import com.eastern.mqdemo.config.ActiveMQProperties;
+import com.eastern.mqdemo.factory.AsyFactory;
+import com.eastern.mqdemo.factory.BaseFactory;
+import com.eastern.mqdemo.factory.JmsMessage;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -32,7 +35,7 @@ public class MqController {
     @Resource
     private ActiveMQProperties properties;
 
-    @ApiOperation("sendNormalMsg")
+/*    @ApiOperation("sendNormalMsg")
     @RequestMapping(value = "/sendNormalMsg", method = RequestMethod.GET)
     public void sendNormalMsg(String msg) throws JMSException {
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(properties.getUser(), properties.getPassword(), properties.getBrokerUrl());
@@ -75,6 +78,30 @@ public class MqController {
     @RequestMapping(value = "/sendPersistentMsg", method = RequestMethod.GET)
     public void sendPersistentMsg(String msg) {
 
+    }*/
+
+    @ApiOperation("sendBaseMsg")
+    @RequestMapping(value = "/sendBaseMsg", method = RequestMethod.GET)
+    public void sendBaseMsg(String msg) throws JMSException {
+        JmsMessage jmsMessage = new JmsMessage(new BaseFactory(), properties);
+        jmsMessage.sendMsg(msg);
+    }
+
+    @ApiOperation("sendDelayMsg")
+    @RequestMapping(value = "/sendDelayMsg", method = RequestMethod.GET)
+    public void sendDelayMsg(String msg) throws JMSException {
+        JmsMessage jmsMessage = new JmsMessage(new BaseFactory(), properties);
+        jmsMessage.sendMsg(msg, message -> {
+            message.setLongProperty(ScheduledMessage.AMQ_SCHEDULED_DELAY, 2*1000);
+            return message;
+        });
+    }
+
+    @ApiOperation("sendAsyMsg")
+    @RequestMapping(value = "/sendAsyMsg", method = RequestMethod.GET)
+    public void sendAsyMsg(String msg) throws JMSException {
+        JmsMessage jmsMessage = new JmsMessage(new AsyFactory(), properties);
+        jmsMessage.sendMsg(msg);
     }
 
 }
